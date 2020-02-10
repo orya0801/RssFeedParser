@@ -1,6 +1,6 @@
 ﻿namespace RssFeeder
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -32,11 +32,13 @@
             this.ButtonDescription = new System.Windows.Forms.Button();
             this.StartButton = new System.Windows.Forms.Button();
             this.MainBox = new System.Windows.Forms.ListBox();
+            this.ButtonSettings = new System.Windows.Forms.Button();
             this.MainPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainPanel
             // 
+            this.MainPanel.Controls.Add(this.ButtonSettings);
             this.MainPanel.Controls.Add(this.ButtonDescription);
             this.MainPanel.Controls.Add(this.StartButton);
             this.MainPanel.Controls.Add(this.MainBox);
@@ -77,13 +79,23 @@
             this.MainBox.TabIndex = 0;
             this.MainBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MainBox_MouseDoubleClick);
             // 
-            // Form1
+            // ButtonSettings
+            // 
+            this.ButtonSettings.Location = new System.Drawing.Point(1123, 115);
+            this.ButtonSettings.Name = "ButtonSettings";
+            this.ButtonSettings.Size = new System.Drawing.Size(114, 44);
+            this.ButtonSettings.TabIndex = 3;
+            this.ButtonSettings.Text = "Settings";
+            this.ButtonSettings.UseVisualStyleBackColor = true;
+            this.ButtonSettings.Click += new System.EventHandler(this.ButtonSettings_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1241, 586);
             this.Controls.Add(this.MainPanel);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Form1";
             this.MainPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -96,6 +108,7 @@
         private System.Windows.Forms.ListBox MainBox;
         private System.Windows.Forms.Button StartButton;
         private System.Windows.Forms.Button ButtonDescription;
+        private System.Windows.Forms.Button ButtonSettings;
     }
 }
 

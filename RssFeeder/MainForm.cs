@@ -7,16 +7,32 @@ using System.Diagnostics;
 using System.Xml;
 using System.Text.RegularExpressions;
 
+
+
+/// <summary>
+/// TODO
+/// 1. Доделать форму Settings
+/// 2. Комментирование кода
+/// 3. Код-ревью, поиск ошибок
+/// 4. Оптимизация через Task-и
+/// </summary>
+
+
+
 namespace RssFeeder
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         ParserWorker<ItemModel[]> parser;
         Timer timer = new Timer();
+
+        string currRssFeed;
+        int currTimerSettings;
+
         string title;
 
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
 
@@ -34,11 +50,18 @@ namespace RssFeeder
             //Установка параметров таймера
             timer.Interval = Properties.Settings.Default.Timer;
             timer.Tick += new EventHandler(timer_Tick);
+
+
+            currRssFeed = parser.Settings.BaseUrl;
+            currTimerSettings = Properties.Settings.Default.Timer;
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
             MainBox.Items.Clear();
+
+            ChangeRssFeedSettings();
+
             parser.Start();
         }
 
@@ -102,6 +125,8 @@ namespace RssFeeder
         {
             MainBox.Items.Clear();
 
+            ChangeRssFeedSettings();
+
             parser.Start();
 
             timer.Start();
@@ -124,6 +149,33 @@ namespace RssFeeder
             catch
             {
                 return;
+            }
+        }
+
+        private void ButtonSettings_Click(object sender, EventArgs e)
+        {
+            SettingsForm settingsForm = new SettingsForm();
+            settingsForm.Show();
+        }
+
+        public void ChangeRssFeedSettings()
+        {
+            if(currRssFeed != Properties.Settings.Default.Url)
+            {
+                parser = new ParserWorker<ItemModel[]>(new RssFeedParser())
+                {
+                    Settings = new RssFeedParserSettings()
+                };
+
+                parser.OnCompleted += Parser_OnComlpeted;
+                parser.OnNewData += Parser_OnNewData;
+                parser.OnOpenLink += Parser_OnOpenLink;
+                parser.OnDescription += Parser_OnDescription;
+            }
+            if(currTimerSettings != Properties.Settings.Default.Timer)
+            {
+                timer.Interval = Properties.Settings.Default.Timer;
+                timer.Tick += new EventHandler(timer_Tick);
             }
         }
     }
