@@ -1,11 +1,5 @@
-﻿using RssFeeder.Core.XmlModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Xml;
-using System.Diagnostics;
 
 namespace RssFeeder.Core
 {
@@ -14,7 +8,7 @@ namespace RssFeeder.Core
         IParser<T> parser;
         IParserSettings parserSettings;
 
-        XmlLoader xmlLoader;
+        RssLoader xmlLoader;
 
         T items;
 
@@ -22,7 +16,7 @@ namespace RssFeeder.Core
 
         #region Properties
 
-        public IParser <T> Parser
+        public IParser<T> Parser
         {
             get
             {
@@ -43,7 +37,7 @@ namespace RssFeeder.Core
             set
             {
                 parserSettings = value;
-                xmlLoader = new XmlLoader(value);
+                xmlLoader = new RssLoader(value);
             }
         }
 
@@ -68,9 +62,13 @@ namespace RssFeeder.Core
         }
         #endregion
 
+        //Событие возвращающее спаршенные данные
         public event Action<object, T> OnNewData;
+        //Информирование при завершении работы парсера
         public event Action<object> OnCompleted;
+        //Событие открывающее браузер с переходом на выбранную статью 
         public event Action<object, T, string> OnOpenLink;
+        //Событие открывающее описание статьи
         public event Action<object, T, string> OnDescription;
 
         public ParserWorker(IParser<T> parser)
@@ -82,18 +80,21 @@ namespace RssFeeder.Core
         {
             this.parserSettings = parserSettings;
         }
-    
+        
+        //Запуск парсера rss-ленты
         public void Start()
         {
             isActive = true;
             Worker();
         }
 
+        //Остановка парсера
         public void Abort()
         {
             isActive = false;
         }
 
+        //Контроль процесса парсинга
         private void Worker()
         {
             if (!isActive)
@@ -102,7 +103,7 @@ namespace RssFeeder.Core
                 return;
             }
 
-
+            //Присвоение списку объектов ItemModel новых значений, полученных из rss-ленты
             items = Loader();
 
             OnNewData?.Invoke(this, items);
@@ -111,7 +112,7 @@ namespace RssFeeder.Core
         }
 
         public void FindLinkWithTitle(string title)
-        { 
+        {
             OnOpenLink?.Invoke(this, items, title);
         }
 
@@ -120,6 +121,7 @@ namespace RssFeeder.Core
             OnDescription?.Invoke(this, items, title);
         }
 
+        //Загрузка rss-ленты и ее парсинг
         private T Loader()
         {
             var source = xmlLoader.Url;

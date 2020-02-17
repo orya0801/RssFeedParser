@@ -1,12 +1,11 @@
-﻿using System.Net.Http;
-
-namespace RssFeeder.Core
+﻿namespace RssFeeder.Core
 {
-    class XmlLoader
+    //Класс назначен для загрузки rss-документа из указанных настроек парсера
+    class RssLoader
     {
         readonly string url;
 
-        public XmlLoader(IParserSettings settings)
+        public RssLoader(IParserSettings settings)
         {
             url = $"{settings.BaseUrl}";
         }

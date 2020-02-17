@@ -1,11 +1,10 @@
 ﻿using RssFeeder.Core;
 using RssFeeder.Core.RssFeed;
-using RssFeeder.Core.XmlModels;
+using RssFeeder.Core.RssModels;
 using System;
-using System.Windows.Forms;
 using System.Diagnostics;
-using System.Xml;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 
 
@@ -36,6 +35,8 @@ namespace RssFeeder
         {
             InitializeComponent();
 
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+
             //Настройка парсера
             parser = new ParserWorker<ItemModel[]>(new RssFeedParser())
             {
@@ -58,11 +59,18 @@ namespace RssFeeder
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            MainBox.Items.Clear();
+            try
+            {
+                MainBox.Items.Clear();
 
-            ChangeRssFeedSettings();
+                ChangeRssFeedSettings();
 
-            parser.Start();
+                parser.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
@@ -71,7 +79,7 @@ namespace RssFeeder
             ItemModel currItem = new ItemModel();
             foreach (var item in arg2)
             {
-                if (item.Title == title)
+                if ($"{item.Title}. Дата публикации: {item.PubDate.ToString("F")}" == title)
                 {
                     currItem = item;
                     break;
@@ -82,7 +90,7 @@ namespace RssFeeder
             currItem.Description = Regex.Replace(currItem.Description, "<[^>]+>", "");
             currItem.Description = Regex.Replace(currItem.Description, "Читать дальше &rarr;", "");
             descriptionForm.LabelDescription.Text = currItem.Description;
-            descriptionForm.LabelPubDate.Text = "Дата публикации " + currItem.PubDate.ToString("F");
+            descriptionForm.LabelPubDate.Text = $"Дата публикации: {currItem.PubDate.ToString("F")}";
             descriptionForm.Show();
         }
 
@@ -91,29 +99,29 @@ namespace RssFeeder
             ItemModel currItem = new ItemModel();
             foreach (var item in arg2)
             {
-                if(item.Title == title)
+                if ($"{item.Title}. Дата публикации: {item.PubDate.ToString("F")}" == title)
                 {
                     currItem = item;
                     break;
-                }    
+                }
             }
             Process.Start(currItem.Link);
         }
 
         private void Parser_OnNewData(object arg1, ItemModel[] arg2)
         {
-            foreach(var item in arg2)
+            foreach (var item in arg2)
             {
                 try
                 {
-                    MainBox.Items.Add(item.Title);
+                    MainBox.Items.Add($"{item.Title}. Дата публикации: {item.PubDate.ToString("F")}");
                 }
                 catch
                 {
-                    MainBox.Items.Add("Неудача");
+                    MainBox.Items.Add("Something goes wrong");
                 }
             }
-            
+
         }
 
         private void Parser_OnComlpeted(object obj)
@@ -123,13 +131,20 @@ namespace RssFeeder
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            MainBox.Items.Clear();
+            try
+            {
+                MainBox.Items.Clear();
 
-            ChangeRssFeedSettings();
+                ChangeRssFeedSettings();
 
-            parser.Start();
+                parser.Start();
 
-            timer.Start();
+                timer.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void MainBox_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -160,7 +175,7 @@ namespace RssFeeder
 
         public void ChangeRssFeedSettings()
         {
-            if(currRssFeed != Properties.Settings.Default.Url)
+            if (currRssFeed != Properties.Settings.Default.Url)
             {
                 parser = new ParserWorker<ItemModel[]>(new RssFeedParser())
                 {
@@ -172,7 +187,7 @@ namespace RssFeeder
                 parser.OnOpenLink += Parser_OnOpenLink;
                 parser.OnDescription += Parser_OnDescription;
             }
-            if(currTimerSettings != Properties.Settings.Default.Timer)
+            if (currTimerSettings != Properties.Settings.Default.Timer)
             {
                 timer.Interval = Properties.Settings.Default.Timer;
                 timer.Tick += new EventHandler(timer_Tick);

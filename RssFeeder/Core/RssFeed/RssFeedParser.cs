@@ -1,9 +1,6 @@
-﻿using RssFeeder.Core.XmlModels;
+﻿using RssFeeder.Core.RssModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace RssFeeder.Core.RssFeed
@@ -17,20 +14,23 @@ namespace RssFeeder.Core.RssFeed
             ItemModel item;
             items = new List<ItemModel>();
 
-            XmlElement xmlRoot = xmlDocument.DocumentElement;
 
+            XmlElement xmlRoot = xmlDocument.DocumentElement;
+            
+            //Поиск по тегам rss-ленты
             foreach (XmlNode xmlNode in xmlRoot)
             {
                 foreach (XmlNode childNode in xmlNode.ChildNodes)
                 {
                     if (childNode.Name == "item")
                     {
+                        //Создание нового объекта из item-a rss-ленты
                         item = new ItemModel();
                         foreach (XmlNode secondChildNode in childNode.ChildNodes)
                         {
                             if (secondChildNode.Name == "title")
                                 item.Title = secondChildNode.InnerText;
-                            if (secondChildNode.Name == "guid")
+                            if (secondChildNode.Name == "link")
                                 item.Link = secondChildNode.InnerText;
                             if (secondChildNode.Name == "description")
                                 item.Description = secondChildNode.InnerText;

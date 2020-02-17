@@ -66,8 +66,8 @@
     <Compile Include="Core\ParserWorker.cs" />
     <Compile Include="Core\RssFeed\RssFeedParser.cs" />
     <Compile Include="Core\RssFeed\RssFeedParserSettings.cs" />
-    <Compile Include="Core\XmlLoader.cs" />
-    <Compile Include="Core\XmlModels\ItemModel.cs" />
+    <Compile Include="Core\RssLoader.cs" />
+    <Compile Include="Core\RssModels\ItemModel.cs" />
     <Compile Include="DescriptionForm.cs">
       <SubType>Form</SubType>
     </Compile>

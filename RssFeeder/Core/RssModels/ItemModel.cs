@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RssFeeder.Core.XmlModels
+namespace RssFeeder.Core.RssModels
 {
+    //Представление тега item и его подтегов в виде класса
     public class ItemModel
     {
-        public string Title { get; set; } 
-        public string Link { get; set; } 
-        public string Description { get; set; } 
+        public string Title { get; set; }
+        public string Link { get; set; }
+        public string Description { get; set; }
         public DateTime PubDate { get; set; }
 
         public ItemModel() { }
